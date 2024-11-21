@@ -24,7 +24,6 @@ class KMeansCustom:
 
     def fit(self, X):
         np.random.seed(42)
-        # KMeans++ initialization
         initial_centroids = self._kmeans_plus_plus(X)
         self.centroids = initial_centroids
 
@@ -39,10 +38,9 @@ class KMeansCustom:
             self.centroids = new_centroids
 
     def _kmeans_plus_plus(self, X):
-        # Implement KMeans++ initialization
-        centroids = [X[np.random.choice(X.shape[0])]]  # Choose first centroid randomly
+       
+        centroids = [X[np.random.choice(X.shape[0])]]
         for _ in range(1, self.n_clusters):
-            # Compute the distance of each point to the nearest centroid
             dist_sq = np.min(np.linalg.norm(X[:, np.newaxis] - np.array(centroids), axis=2), axis=1)**2
             prob_dist = dist_sq / np.sum(dist_sq)
             new_centroid = X[np.random.choice(X.shape[0], p=prob_dist)]
@@ -94,7 +92,7 @@ terms = vectorizer.get_feature_names_out()
 
 def assign_shapes(df):
     unique_sources = df['source'].unique()
-    shapes = ['o', 's', '^', 'D', 'P', '*', 'H']  # Add more shapes as necessary
+    shapes = ['o', 's', '^', 'D', 'P', '*', 'H'] 
     source_to_shape = {
         source: shapes[i % len(shapes)] for i, source in enumerate(unique_sources)
     }
@@ -114,10 +112,10 @@ for cluster_num in range(true_k):
         shape = shapes[source]
         
         plt.scatter(
-            X_lsa[cluster_points[cluster_points['source'] == source].index, 0],  # First LSA component
-            X_lsa[cluster_points[cluster_points['source'] == source].index, 1],  # Second LSA component
+            X_lsa[cluster_points[cluster_points['source'] == source].index, 0],  
+            X_lsa[cluster_points[cluster_points['source'] == source].index, 1], 
             c=[colors(cluster_num)],  
-            label=f'Cluster {cluster_num}' if cluster_num not in cluster_labels else "",  # Label only for first cluster
+            label=f'Cluster {cluster_num}' if cluster_num not in cluster_labels else "",  
             marker=shape,  
             alpha=0.7
         )
@@ -134,7 +132,7 @@ cluster_legend = [Line2D([0], [0], marker='o', color='w', label=f'Cluster {i}',
 source_handles = [plt.Line2D([], [], marker=shape, color='black', label=label, markersize=10, linewidth=0)
                  for shape, label in zip(shapes.values(), source_labels)]
 
-# Combine handles and labels
+
 handles = cluster_legend + source_handles
 labels = [handle.get_label() for handle in handles]
 
@@ -145,7 +143,7 @@ plt.title('Article Clusters by News Outlet and Cluster')
 plt.xlabel('LSA Component 1')
 plt.ylabel('LSA Component 2')
 
-plt.savefig('article_clusters_kmeans.png')  # Save the plot as a PNG file
+plt.savefig('article_clusters_kmeans.png')  
 plt.close() 
 
 print(f"Clustering visualization with shapes and colors saved to article_clusters_lsa_shapes_colors_legend_custom_kmeans.png")
